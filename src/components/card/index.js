@@ -1,80 +1,117 @@
-import React from 'react';
-import { SwipeButtonsContainer, SwipeItem } from 'react-native-swipe-item';
-import ButtonCard from './button';
-import { Text, TouchableOpacity, Vibration, View } from 'react-native';
-import { Icon } from '@ui-kitten/components';
-import Styles from '../../style'
+import React from 'react'
+import { SwipeButtonsContainer, SwipeItem } from 'react-native-swipe-item'
+import { ButtonCard } from './button'
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native'
+import { Icon } from '@ui-kitten/components'
 
-export default function Card({ item, deleteHabit, checkMode, doneHabit }) {
+export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) {
+  const currentDay = `${ (new Date().getMonth()) + 1 }${ (new Date().getDate()) }${ new Date().getFullYear() }`
+
   const leftButton = (
-    <SwipeButtonsContainer style={ Styles.swiperContainer }>
-      <ButtonCard color="green" onClick={ () => {
-        // setValue(item.name)
-        // setIsEdit(!isEdit)
-        // setEditId(item.id)
-        // setModalShow(!modalShow)
-      } } id={ item.id } title="Изменить"/>
+    <SwipeButtonsContainer style={ styles.swiperContainer }>
+      <ButtonCard color="green" onClick={ onEdit } item={ item } title="Изменить"/>
     </SwipeButtonsContainer>
   )
 
   const rightButton = (
-    <SwipeButtonsContainer style={ Styles.swiperContainer }>
-      <ButtonCard color="red" onClick={ deleteHabit } id={ item.id } title="Удалить"/>
+    <SwipeButtonsContainer style={ styles.swiperContainer }>
+      <ButtonCard color="red" onClick={ deleteHabit } item={ item } title="Удалить"/>
     </SwipeButtonsContainer>
   )
 
   return (
-    <SwipeItem style={ styles.swiper } swipeContainerStyle={ {
-      justifyContent: 'center',
-      alignItems: 'center',
-    } } leftButtons={ leftButton } rightButtons={ rightButton }>
+    <SwipeItem
+      style={ styles.swiper }
+      swipeContainerStyle={ styles.swipeContainerStyle }
+      leftButtons={ leftButton }
+      rightButtons={ rightButton }>
       <TouchableOpacity
-        style={ {
-          width: '100%',
-          height: 136,
-          backgroundColor: '#2A334B',
-          paddingHorizontal: 13,
-          borderRadius: 10,
-          paddingVertical: 15
-        } }
-        onTouchStart={ e => console.log(e) } onLongPress={ () => doneHabit(item.id) } delayLongPress={ 500 } activeOpacity={ 1 }>
-        <View style={ {
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap'
-        } }>
-          <View style={ {width: '70%', justifyContent: 'space-between', height: '100%'} }>
-            <Text style={ {
-              fontFamily: 'MontserratSemiBold',
-              fontSize: 18,
-              lineHeight: 22,
-              color: '#fff'
-            } }>
-              { item.name.length > 25 ? item.name.slice(0, 22) + '...' : item.name }
+        style={ styles.card }
+        onLongPress={ () => doneHabit(item.id) }
+        delayLongPress={ 500 }
+        activeOpacity={ 1 }>
+        <View style={ styles.cardRow }>
+          <View style={ styles.cardCol }>
+            <Text style={ styles.cardHabit }>
+              { item.name.length > 22 ? item.name.slice(0, 19) + '...' : item.name }
             </Text>
-            <Text style={ {fontFamily: 'MontserratRegular', fontSize: 47, lineHeight: 57, color: '#fff'} }>
+            <Text style={ styles.cardInfo }>
               { item.count ? 'x' + item.count : 'x0' }
             </Text>
             <Text
-              style={ {
-                fontWeight: '300',
-                fontSize: 12,
-                lineHeight: 14,
-                marginTop: 6.34,
-                color: '#fff',
-                opacity: .7
-              } }>
-              { !item.date[`${ (new Date().getMonth()) + 1 }${ (new Date().getDate()) }${ new Date().getFullYear() }`] ? 'Сегодня не было выполнено!' : 'На сегодня выполнено!' }
+              style={ styles.cardWarning }>
+              { !item.date[currentDay] ? 'Сегодня не было выполнено!' : 'На сегодня выполнено!' }
             </Text>
           </View>
           <View style={ {height: '100%'} }>
-            <Icon style={ {width: 30, height: 30,} }
-                  fill={ checkMode(item.date) ? '#F7D000' : 'rgba(255, 255, 255, 0.4)' } name="flash-outline"/>
+            <Icon style={ styles.cardIcon } fill={ checkMode(item.date) ? '#F7D000' : 'rgba(255, 255, 255, 0.4)' } name="flash-outline"/>
           </View>
         </View>
       </TouchableOpacity>
     </SwipeItem>
   )
 }
+
+const styles = StyleSheet.create({
+  swiperContainer: {
+    alignSelf: 'center',
+    aspectRatio: 1,
+    flexDirection: 'column',
+    padding: 10,
+    height: 136,
+  },
+  swiper: {
+    marginBottom: 15,
+    borderRadius: 10,
+    width: '100%',
+    height: 136
+  },
+  swipeContainerStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    width: '100%',
+    height: 136,
+    backgroundColor: '#2A334B',
+    paddingHorizontal: 13,
+    borderRadius: 10,
+    paddingVertical: 15
+  },
+  cardRow: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexWrap: 'wrap'
+  },
+  cardCol: {
+    width: '70%',
+    justifyContent: 'space-between',
+    height: '100%'
+  },
+  cardHabit: {
+    fontFamily: 'MontserratSemiBold',
+    fontSize: 18,
+    lineHeight: 22,
+    color: '#fff'
+  },
+  cardInfo: {
+    fontFamily: 'MontserratRegular',
+    fontSize: 47,
+    lineHeight: 57,
+    color: '#fff'
+  },
+  cardWarning: {
+    fontWeight: '300',
+    fontSize: 12,
+    lineHeight: 14,
+    marginTop: 6.34,
+    color: '#fff',
+    opacity: .7
+  },
+  cardIcon: {
+    width: 30,
+    height: 30
+  }
+})

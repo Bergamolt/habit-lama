@@ -1,12 +1,9 @@
 import React from 'react'
 import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 
-export default function ButtonCard({onClick, id, title, color}) {
+export function ButtonCard({onClick, item, title, color}) {
   return (
-    <TouchableOpacity
-      style={ {...styles.button, backgroundColor: color} }
-      onPress={ () => onClick(id) }
-    >
+    <TouchableOpacity style={ {...styles.button, backgroundColor: color} } onPress={ () => onClick(item) }>
       <Text>{ title }</Text>
     </TouchableOpacity>
   )

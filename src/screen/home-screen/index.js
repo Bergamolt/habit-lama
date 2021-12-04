@@ -2,32 +2,32 @@ import React from 'react'
 import { useFonts } from '@expo-google-fonts/inter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  InteractionManager,
   Text,
   TouchableOpacity, Vibration,
-  View
+  View,
+  StyleSheet
 } from 'react-native';
 import { Icon, Layout, List } from '@ui-kitten/components';
 import AppLoading from 'expo-app-loading';
 import Styles from '../../style';
 import Card from '../../components/card';
-import Modal from '../../components/modal'
-//
+import { MyModal } from '../../components/modal'
+
 export function HomeScreen() {
   const [ value, setValue ] = React.useState('')
 
-  const [ habits, setHabits ] = React.useState([{
+  const [ habits, setHabits ] = React.useState([ {
     id: Date.now(),
     name: 'sdgfsd',
     count: 0,
     date: {['sdgdsgsdg']: false}
-  },])
+  }, ])
 
   const [ modalShow, setModalShow ] = React.useState(false)
 
   const [ isEdit, setIsEdit ] = React.useState(false)
 
-  const [editId, setEditId] = React.useState('')
+  const [ editId, setEditId ] = React.useState('')
 
   let [ fontsLoaded ] = useFonts({
     MontserratBold: require('../../../assets/fonts/Montserrat/Montserrat-Bold.ttf'),
@@ -103,7 +103,7 @@ export function HomeScreen() {
     return value
   }
 
-  const deleteHabit = (id) => {
+  const deleteHabit = ({id}) => {
     const copyHabits = JSON.parse(JSON.stringify(habits))
 
     const habit = copyHabits.findIndex(h => h.id === id)
@@ -149,50 +149,68 @@ export function HomeScreen() {
     Vibration.vibrate(10)
   }
 
-  // const renderHabit = ({item}) => (<Card checkMode={checkMode} item={item} deleteHabit={deleteHabit} doneHabit={doneHabit} />)
+  const onEdit = ({name, id}) => {
+    setValue(name)
+    setIsEdit(!isEdit)
+    setEditId(id)
+    setModalShow(!modalShow)
+  }
+
+  const renderHabit = ({item}) => (
+    <Card checkMode={ checkMode } item={ item } deleteHabit={ deleteHabit } onEdit={ onEdit } doneHabit={ doneHabit }/>)
 
   return (
-    <Layout style={ {flex: 1, paddingTop: 50, backgroundColor: '#FFFFFF', paddingHorizontal: 12,} }>
-      <View style={ {
-        width: '100%',
-        marginBottom: 30,
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: 'row'
-      } }>
+    <Layout style={ styles.layout }>
+      <View style={ styles.container }>
         <Text style={ {fontFamily: 'MontserratBold', fontSize: 21, lineHeight: 26, color: '#2A334B'} }>
           Мои привычки
         </Text>
         <TouchableOpacity
           activeOpacity={ 0.9 }
           style={ Styles.navbarBtn }
-          onPress={() => setModalShow(!modalShow)}
+          onPress={ () => setModalShow(!modalShow) }
         >
           <Icon style={ {width: 25, height: 25} } fill="#eaeaea" name="plus-outline"/>
         </TouchableOpacity>
       </View>
-      {/*<View style={ {flex: 1, justifyContent: 'center', alignItems: 'center'} }>*/}
-      {/*  {*/}
-      {/*    habits.length ? (<List*/}
-      {/*      style={ {backgroundColor: 'rgba(0, 0, 0, 0)', width: '100%', height: '100%', borderRadius: 10} }*/}
-      {/*      data={ habits }*/}
-      {/*      renderItem={ renderHabit }*/}
-      {/*    />) : (*/}
-      {/*      <Text style={ {fontFamily: 'MontserratRegular', fontSize: 16, color: '#2A334B'} }>Нет запланированых*/}
-      {/*        привычек</Text>)*/}
-      {/*  }*/}
-      {/*</View>*/}
-      <Modal
-        modalShow={modalShow}
-        setModalShow={setModalShow}
-        setValue={setValue}
-        setIsEdit={setIsEdit}
-        isEdit={isEdit}
-        editHabit={editHabit}
-        addNewHabit={addNewHabit}
-        editId={editId}
-        value={value}
+      <View style={ {flex: 1, justifyContent: 'center', alignItems: 'center'} }>
+        {
+          habits.length ? (<List
+            style={ {backgroundColor: 'rgba(0, 0, 0, 0)', width: '100%', height: '100%', borderRadius: 10} }
+            data={ habits }
+            renderItem={ renderHabit }
+          />) : (
+            <Text style={ {fontFamily: 'MontserratRegular', fontSize: 16, color: '#2A334B'} }>Нет запланированых
+              привычек</Text>)
+        }
+      </View>
+      <MyModal
+        modalShow={ modalShow }
+        setModalShow={ setModalShow }
+        setValue={ setValue }
+        setIsEdit={ setIsEdit }
+        isEdit={ isEdit }
+        editHabit={ editHabit }
+        addNewHabit={ addNewHabit }
+        editId={ editId }
+        value={ value }
       />
     </Layout>
   )
 }
+
+const styles = StyleSheet.create({
+  layout: {
+    flex: 1,
+    paddingTop: 50,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+  },
+  container: {
+    width: '100%',
+    marginBottom: 30,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexDirection: 'row'
+  }
+})

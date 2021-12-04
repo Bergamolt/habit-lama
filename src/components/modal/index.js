@@ -1,7 +1,7 @@
 import React from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Text, TextInput, TouchableOpacity, View, Modal} from 'react-native';
 
-export default function Modal({modalShow, setModalShow, setValue, setIsEdit, isEdit, editHabit, addNewHabit, editId, value}) {
+export function MyModal({modalShow, setModalShow, setValue, setIsEdit, isEdit, editHabit, addNewHabit, editId, value}) {
   const inputRef = React.useRef()
 
   return (
