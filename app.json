@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "365_Days_Habit",
-    "slug": "365_Days_Habit",
-    "version": "1.0.0",
+    "name": "Habit Challenge",
+    "slug": "Habit_Challenge",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.lamapix.habitchellenge"
     },
     "web": {
       "favicon": "./assets/favicon.png"
