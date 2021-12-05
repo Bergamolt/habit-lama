@@ -5,7 +5,17 @@ import { Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
 export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) {
+  const [prevElements, setPrevElements] = React.useState([])
+  const swiperItemEl = React.useRef(null)
+
   const currentDay = `${ (new Date().getMonth()) + 1 }${ (new Date().getDate()) }${ new Date().getFullYear() }`
+
+  const close = () => {
+    console.log(swiperItemEl.current === prevEl)
+    if (prevEl) {
+      prevEl.close()
+    }
+  }
 
   const leftButton = (
     <SwipeButtonsContainer style={ styles.swiperContainer }>
@@ -21,13 +31,22 @@ export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) 
 
   return (
     <SwipeItem
+      ref={swiperItemEl}
+      onSwipeInitial={(e) => {
+        setPrevElements([
+          ...prevElements,
+          e
+        ])
+        console.log(prevElements.length)
+      }}
       style={ styles.swiper }
       swipeContainerStyle={ styles.swipeContainerStyle }
       leftButtons={ leftButton }
       rightButtons={ rightButton }>
       <TouchableOpacity
         style={ styles.card }
-        onLongPress={ () => doneHabit(item.id) }
+        onPress={() => close()}
+        onLongPress={ () => doneHabit(item.id)}
         delayLongPress={ 500 }
         activeOpacity={ 1 }>
         <View style={ styles.cardRow }>
