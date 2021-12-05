@@ -1,10 +1,11 @@
 import React from 'react'
 import { Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Icon } from '@ui-kitten/components';
 
-export function ButtonCard({onClick, item, title, color}) {
+export function ButtonCard({onClick, item, icon, color}) {
   return (
     <TouchableOpacity style={ {...styles.button, backgroundColor: color} } onPress={ () => onClick(item) }>
-      <Text>{ title }</Text>
+      <Icon style={{width: 30, height: 30}} fill="rgba(255, 255, 255, 0.9)" name={icon}/>
     </TouchableOpacity>
   )
 }

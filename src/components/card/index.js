@@ -4,49 +4,49 @@ import { ButtonCard } from './button'
 import { Text, TouchableOpacity, View, StyleSheet } from 'react-native'
 import { Icon } from '@ui-kitten/components'
 
-export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) {
-  const [prevElements, setPrevElements] = React.useState([])
-  const swiperItemEl = React.useRef(null)
+const swiperItems = {}
+let prevOpenItem
 
+const closeSwiperItem = (id) => {
+  if (prevOpenItem && prevOpenItem !== swiperItems[id]) {
+    prevOpenItem.close()
+  }
+  prevOpenItem = swiperItems[id]
+}
+
+export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) {
   const currentDay = `${ (new Date().getMonth()) + 1 }${ (new Date().getDate()) }${ new Date().getFullYear() }`
 
-  const close = () => {
-    console.log(swiperItemEl.current === prevEl)
-    if (prevEl) {
-      prevEl.close()
-    }
+  const onClick = (id, callback) => {
+    closeSwiperItem(id)
+    return callback
   }
 
   const leftButton = (
     <SwipeButtonsContainer style={ styles.swiperContainer }>
-      <ButtonCard color="green" onClick={ onEdit } item={ item } title="Изменить"/>
+      <ButtonCard icon="edit-outline" color="#31CF2E" onClick={ onClick(item.id, onEdit) } item={ item }/>
     </SwipeButtonsContainer>
   )
 
   const rightButton = (
     <SwipeButtonsContainer style={ styles.swiperContainer }>
-      <ButtonCard color="red" onClick={ deleteHabit } item={ item } title="Удалить"/>
+      <ButtonCard icon="trash-outline" color="#EF1919" onClick={ deleteHabit } item={ item }/>
     </SwipeButtonsContainer>
   )
 
   return (
     <SwipeItem
-      ref={swiperItemEl}
-      onSwipeInitial={(e) => {
-        setPrevElements([
-          ...prevElements,
-          e
-        ])
-        console.log(prevElements.length)
-      }}
+      ref={ ref => swiperItems[item.id] = ref }
+      onSwipeInitial={ () => closeSwiperItem(item.id) }
       style={ styles.swiper }
       swipeContainerStyle={ styles.swipeContainerStyle }
       leftButtons={ leftButton }
-      rightButtons={ rightButton }>
+      rightButtons={ rightButton }
+    >
       <TouchableOpacity
+        onPress={ () => closeSwiperItem(item.id) }
         style={ styles.card }
-        onPress={() => close()}
-        onLongPress={ () => doneHabit(item.id)}
+        onLongPress={ () => doneHabit(item.id) }
         delayLongPress={ 500 }
         activeOpacity={ 1 }>
         <View style={ styles.cardRow }>
@@ -63,7 +63,8 @@ export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) 
             </Text>
           </View>
           <View style={ {height: '100%'} }>
-            <Icon style={ styles.cardIcon } fill={ checkMode(item.date) ? '#F7D000' : 'rgba(255, 255, 255, 0.4)' } name="flash-outline"/>
+            <Icon style={ styles.cardIcon } fill={ checkMode(item.date) ? '#F7D000' : 'rgba(255, 255, 255, 0.4)' }
+                  name="flash-outline"/>
           </View>
         </View>
       </TouchableOpacity>
@@ -73,10 +74,13 @@ export default function Card({item, deleteHabit, onEdit, checkMode, doneHabit}) 
 
 const styles = StyleSheet.create({
   swiperContainer: {
+    width: '20%',
     alignSelf: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
     aspectRatio: 1,
     flexDirection: 'column',
-    padding: 10,
+    padding: 5,
     height: 136,
   },
   swiper: {

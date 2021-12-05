@@ -1,8 +1,8 @@
 import React from 'react'
 import { Text, TextInput, TouchableOpacity, View, Modal} from 'react-native';
 
-export function MyModal({modalShow, setModalShow, setValue, setIsEdit, isEdit, editHabit, addNewHabit, editId, value}) {
-  const inputRef = React.useRef()
+export function MyModal({modalShow, setModalShow, setValue, setIsEdit, isEdit, editHabit, addNewHabit, editId, setEditId, value}) {
+  const inputRef = React.useRef(null)
 
   return (
     <Modal
@@ -20,7 +20,8 @@ export function MyModal({modalShow, setModalShow, setValue, setIsEdit, isEdit, e
         alignItems: 'center',
         backgroundColor: 'rgba(255,255,255,0.7)',
         paddingHorizontal: 28
-      } }>
+      } }
+      >
         <View style={ {
           paddingBottom: 40,
           paddingTop: 35,
@@ -79,7 +80,9 @@ export function MyModal({modalShow, setModalShow, setValue, setIsEdit, isEdit, e
               } }>{isEdit ? 'Сохранить' : 'Добавить'}</Text>
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={ 0.9 } onPress={ () => {
+              setValue('')
               setIsEdit(false)
+              setEditId('')
               setModalShow(false)
             } } style={ {
               width: 137,

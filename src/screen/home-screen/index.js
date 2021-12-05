@@ -1,17 +1,12 @@
 import React from 'react'
 import { useFonts } from '@expo-google-fonts/inter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-  Text,
-  TouchableOpacity, Vibration,
-  View,
-  StyleSheet
-} from 'react-native';
-import { Icon, Layout, List } from '@ui-kitten/components';
+import { Text, Vibration, View, StyleSheet } from 'react-native';
+import { Layout, List } from '@ui-kitten/components';
 import AppLoading from 'expo-app-loading';
-import Styles from '../../style';
 import Card from '../../components/card';
 import { MyModal } from '../../components/modal'
+import Header from '../../components/header';
 
 export function HomeScreen() {
   const [ value, setValue ] = React.useState('')
@@ -161,18 +156,7 @@ export function HomeScreen() {
 
   return (
     <Layout style={ styles.layout }>
-      <View style={ styles.container }>
-        <Text style={ {fontFamily: 'MontserratBold', fontSize: 21, lineHeight: 26, color: '#2A334B'} }>
-          Мои привычки
-        </Text>
-        <TouchableOpacity
-          activeOpacity={ 0.9 }
-          style={ Styles.navbarBtn }
-          onPress={ () => setModalShow(!modalShow) }
-        >
-          <Icon style={ {width: 25, height: 25} } fill="#eaeaea" name="plus-outline"/>
-        </TouchableOpacity>
-      </View>
+      <Header onModalShow={ () => setModalShow(!modalShow) }/>
       <View style={ {flex: 1, justifyContent: 'center', alignItems: 'center'} }>
         {
           habits.length ? (<List
@@ -193,6 +177,7 @@ export function HomeScreen() {
         editHabit={ editHabit }
         addNewHabit={ addNewHabit }
         editId={ editId }
+        setEditId={ setEditId }
         value={ value }
       />
     </Layout>
@@ -205,12 +190,5 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 12,
-  },
-  container: {
-    width: '100%',
-    marginBottom: 30,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row'
   }
 })
